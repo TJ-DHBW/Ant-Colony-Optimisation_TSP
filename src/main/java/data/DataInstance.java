@@ -79,4 +79,8 @@ public class DataInstance {
         int scaledIndex = index*2;
         return this.coordinates[scaledIndex+1];
     }
+
+    public int getNumPositions() {
+        return numPositions;
+    }
 }
