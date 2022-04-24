@@ -8,5 +8,7 @@ public enum Configuration {
 
     public final String dataName = "a280.txt";
 
+    public final int maxIterations = 10000;
+
     public final DistanceFunction distanceFunction = Distance::euclidean;
 }

@@ -83,4 +83,16 @@ public class DataInstance {
     public int getNumPositions() {
         return numPositions;
     }
+
+    public double calculateRouteDistance(List<Integer> indexes) {
+        if (indexes.size() < 2) throw new IllegalArgumentException("A route has to consist of at least 2 indexes.");
+        double totalDistance = 0.0;
+
+        for (int i = 0; i < indexes.size()-1; i++) {
+            totalDistance += this.getDistanceMatrix()[indexes.get(i)][indexes.get(i+1)];
+        }
+        totalDistance += this.getDistanceMatrix()[indexes.get(indexes.size()-1)][indexes.get(0)];
+
+        return totalDistance;
+    }
 }
