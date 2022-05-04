@@ -1,36 +1,52 @@
 package aco;
 
+import app.Configuration;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class AntColony {
     private final AntColonyParameters parameters;
     private final double[][] distanceMatrix;
     private final double[][] pheromoneTrails;
-    private final ArrayList<Ant> ants;
+    private final Ant[] ants;
+    private final Random randomGenerator;
 
     private int[] bestTourOrder;
     private double bestTourLength;
 
 
-    public AntColony(AntColonyParameters parameters) {
+    public AntColony(AntColonyParameters parameters, Random randomGenerator) {
         this.parameters = parameters;
 
-        this.distanceMatrix = this.parameters.dataInstance().getDistanceMatrix();
+        this.distanceMatrix = this.parameters.distanceMatrix();
+        this.validateDistanceMatrix();
 
-        int numPositions = this.parameters.dataInstance().getNumPositions();
-        this.pheromoneTrails = new double[numPositions][numPositions];
+        int numCities = this.getNumCities();
+        this.pheromoneTrails = new double[numCities][numCities];
 
         // Probabilities are not needed as a field. It should be passed as local variables.
 
-        int numAnts = (int) (numPositions * this.parameters.antFactor());
-        this.ants = new ArrayList<>(numAnts);
-        this.createAnts(numAnts, numPositions);
+        this.randomGenerator = randomGenerator;
+        int numAnts = (int) (numCities * this.parameters.antFactor());
+        this.ants = new Ant[numAnts];
     }
 
-    private void createAnts(int numAnts, int trailLength) {
-        for (int i = 0; i < numAnts; i++) {
-            this.ants.add(new Ant(trailLength));
+    private void validateDistanceMatrix() {
+        int numCities = this.getNumCities();
+        for (double[] arr : this.distanceMatrix) {
+            if (arr.length != numCities) throw new IllegalStateException("The distance matrix has to be square. At least one array was length %d, where it should have been %d.".formatted(arr.length, numCities));
+        }
+    }
+
+    private void createAnts() {
+        for (int i = 0; i < this.ants.length; i++) {
+            this.ants[i] = new Ant(this.parameters.antParameters(), this, this.randomGenerator);
         }
     }
 
@@ -40,30 +56,61 @@ public class AntColony {
         }
     }
 
-    public void run(int numIterations) {
-        // TODO: setupAnts() - clear Ants and give them a start city
-        // clearTrails() - init trails with given number
+    public void run() {
+        // create and clear Ants
+        this.createAnts();
+        // init trails with given number
         this.initPheromoneTrails(this.parameters.initialPheromoneValue());
 
 
+        ExecutorService executorService = Executors.newCachedThreadPool();
         for (int i = 0; i < this.parameters.maxIterations(); i++) {
-            // TODO: moveAnts() - let the ants generate a path.
+            System.out.print(".");
+            // let the ants generate a path.
+            if(Configuration.INSTANCE.useThreads) {
+                this.moveAnts(executorService);
+            }else {
+                this.moveAnts();
+            }
             // evaporate pheromones and distribute pheromones from ants.
             this.updateTrails();
             // update best tour and best distance
             this.updateBest();
+        }
+        executorService.shutdown();
+    }
+
+    private void moveAnts(ExecutorService executorService) {
+        ArrayList<Future<?>> futures = new ArrayList<>();
+        for (Ant ant : this.ants) {
+            futures.add(executorService.submit(ant::findTrail));
+        }
+        for (Future<?> future : futures) {
+            try {
+                future.get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+                System.out.println("The moving of the ants was not successful");
+            }
+        }
+    }
+
+    private void moveAnts() {
+        for (Ant ant : this.ants) {
+            ant.findTrail();
         }
     }
 
     private void updateTrails() {
         for (int i = 0; i < this.pheromoneTrails.length; i++) {
             for (int j = 0; j < this.pheromoneTrails[i].length; j++) {
-                this.pheromoneTrails[i][j] *= this.parameters.pheromoneEvaporation();
+                // Always decreasing values degenerate to exactly 0.0. Which breaks a division.
+                this.pheromoneTrails[i][j] = Math.max(this.parameters.pheromoneEvaporation() * this.pheromoneTrails[i][j], Double.MIN_VALUE);
             }
         }
 
         for (Ant ant : this.ants) {
-            double contribution = this.parameters.q() / ant.getTrailLength();
+            double contribution = this.parameters.q() / ant.getTrailDistance();
             int[] trail = ant.getTrail();
             for (int i = 0; i < trail.length - 1; i++) {
                 int from = trail[i];
@@ -76,15 +123,37 @@ public class AntColony {
 
     private void updateBest() {
         if (this.bestTourOrder == null) {
-            this.bestTourOrder = this.ants.get(0).getTrail().clone();
-            this.bestTourLength = this.ants.get(0).getTrailLength();
+            this.bestTourOrder = this.ants[0].getTrail().clone();
+            this.bestTourLength = this.ants[0].getTrailDistance();
         }
 
         for (Ant ant : this.ants) {
-            if (ant.getTrailLength() < this.bestTourLength) {
+            if (ant.getTrailDistance() < this.bestTourLength) {
                 this.bestTourOrder = ant.getTrail().clone();
-                this.bestTourLength = ant.getTrailLength();
+                this.bestTourLength = ant.getTrailDistance();
+                // TODO: Remove logging
+                System.out.println("New Best: "+this.bestTourLength);
             }
         }
+    }
+
+    public double[][] getPheromoneTrails() {
+        return pheromoneTrails;
+    }
+
+    public double[][] getDistanceMatrix() {
+        return distanceMatrix;
+    }
+
+    public int getNumCities() {
+        return distanceMatrix.length;
+    }
+
+    public int[] getBestTourOrder() {
+        return bestTourOrder;
+    }
+
+    public double getBestTourLength() {
+        return bestTourLength;
     }
 }
