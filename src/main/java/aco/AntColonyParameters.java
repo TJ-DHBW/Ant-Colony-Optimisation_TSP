@@ -1,7 +1,6 @@
 package aco;
 
-public record AntColonyParameters(double[][] distanceMatrix,
-                                  AntParameters antParameters,
+public record AntColonyParameters(AntParameters antParameters,
                                   int maxIterations,
                                   double initialPheromoneValue,
                                   double pheromoneEvaporation,

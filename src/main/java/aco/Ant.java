@@ -64,7 +64,8 @@ public class Ant {
             }
         }
 
-        throw new RuntimeException("Was not able to select a city!");
+        // FIXME: This still gets thrown by application3. Probably when values get really small/big and "calculateEdgeDesirability" returns 0
+        throw new RuntimeException("Was not able to select a city! randomNum: "+randomNum+" accuProb: "+accumulatedProbability+" trailIndex: "+trailIndex+" originCity: "+this.trail[trailIndex-1]);
     }
 
     private double[] calculateProbabilities(int originCity) {
@@ -89,6 +90,7 @@ public class Ant {
         return ret;
     }
 
+    // FIXME: If pheromone or distance is 0, it breaks. If alpha/beta are too big, small values degenerate to 0 quickly, which breaks it.
     private double calculateEdgeDesirability(int fromIndex, int toIndex) {
         double[][] distanceMatrix = this.antColony.getDistanceMatrix();
         double[][] pheromoneMatrix = this.antColony.getPheromoneTrails();

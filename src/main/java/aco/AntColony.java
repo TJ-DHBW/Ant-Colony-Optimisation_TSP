@@ -21,10 +21,10 @@ public class AntColony {
     private double bestTourLength;
 
 
-    public AntColony(AntColonyParameters parameters, Random randomGenerator) {
+    public AntColony(AntColonyParameters parameters, double[][] distanceMatrix, Random randomGenerator) {
         this.parameters = parameters;
 
-        this.distanceMatrix = this.parameters.distanceMatrix();
+        this.distanceMatrix = distanceMatrix;
         this.validateDistanceMatrix();
 
         int numCities = this.getNumCities();

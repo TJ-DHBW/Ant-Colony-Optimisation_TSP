@@ -16,7 +16,7 @@ public enum Configuration {
     //public final int maxIterations = 10000;
     public final int maxIterations = 1000;
     public final double alpha = 0.001;
-    public final double beta = 2;
+    public final double beta = 0.02;
     public final double randomFactor = 0.01;
     public final double initialPheromoneValue = 1.0;
     public final double pheromoneEvaporation = 0.05;

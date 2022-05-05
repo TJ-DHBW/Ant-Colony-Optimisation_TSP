@@ -14,14 +14,13 @@ public class Application02 {
         Configuration config = Configuration.INSTANCE;
 
         AntParameters antParameters = new AntParameters(config.alpha, config.beta, config.randomFactor);
-        AntColonyParameters antColonyParameters = new AntColonyParameters(dataInstance.getDistanceMatrix(),
-                antParameters,
+        AntColonyParameters antColonyParameters = new AntColonyParameters(antParameters,
                 config.maxIterations,
                 config.initialPheromoneValue,
                 config.pheromoneEvaporation,
                 config.q,
                 config.antFactor);
-        AntColony antColony = new AntColony(antColonyParameters, Configuration.INSTANCE.randomGenerator);
+        AntColony antColony = new AntColony(antColonyParameters, dataInstance.getDistanceMatrix(), Configuration.INSTANCE.randomGenerator);
 
         antColony.run();
         // TODO: Logging to a file
