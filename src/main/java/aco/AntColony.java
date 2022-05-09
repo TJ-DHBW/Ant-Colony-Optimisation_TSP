@@ -65,6 +65,7 @@ public class AntColony {
 
         ExecutorService executorService = Executors.newCachedThreadPool();
         for (int i = 0; i < this.parameters.maxIterations(); i++) {
+            // TODO: Remove logging
             System.out.print(".");
             // let the ants generate a path.
             if(Configuration.INSTANCE.useThreads) {
@@ -104,11 +105,11 @@ public class AntColony {
     private void updateTrails() {
         for (int i = 0; i < this.pheromoneTrails.length; i++) {
             for (int j = 0; j < this.pheromoneTrails[i].length; j++) {
-                // Always decreasing values degenerate to exactly 0.0. Which breaks a division.
-                this.pheromoneTrails[i][j] = Math.max(this.parameters.pheromoneEvaporation() * this.pheromoneTrails[i][j], Double.MIN_VALUE);
+                this.pheromoneTrails[i][j] = (1-this.parameters.pheromoneEvaporation()) * this.pheromoneTrails[i][j];
             }
         }
 
+        // TODO: This could be parallelized
         for (Ant ant : this.ants) {
             double contribution = this.parameters.q() / ant.getTrailDistance();
             int[] trail = ant.getTrail();

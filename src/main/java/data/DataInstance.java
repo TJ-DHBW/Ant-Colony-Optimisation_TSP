@@ -44,8 +44,6 @@ public class DataInstance {
                     int toX = this.getX(j);
                     int toY = this.getY(j);
                     double distance = this.distanceFunction.calculateDistance(fromX, fromY, toX, toY);
-                    // Cities 170 and 171 have the same coordinates. we define the distance between them as a small value.
-                    distance = distance != 0.0 ? distance : Double.MIN_VALUE*1000;
                     this.distanceMatrix[i][j] = distance;
                     this.distanceMatrix[j][i] = distance;
                 }

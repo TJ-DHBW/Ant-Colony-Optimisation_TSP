@@ -1,6 +1,8 @@
 package aco;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public class Ant {
@@ -51,51 +53,35 @@ public class Ant {
             }
         }
 
-        double[] probabilities = this.calculateProbabilities(this.trail[trailIndex-1]);
-
-        double randomNum = this.randomGenerator.nextDouble();
-        double accumulatedProbability = 0.0;
-
-        for (int i = 0; i < probabilities.length; i++) {
-            accumulatedProbability += probabilities[i];
-            if (accumulatedProbability > randomNum) {
-                if (this.visited[i]) throw new RuntimeException("Selected city #%d, but it has already been visited.".formatted(i));
-                return i;
+        int originCity = this.trail[trailIndex-1];
+        ArrayList<Double> edgeDesirabilities = new ArrayList<>();
+        ArrayList<Integer> cityIndexs = new ArrayList<>();
+        for (int i = 0; i < this.trail.length; i++) {
+            if (!this.visited[i] && i != originCity) {
+                edgeDesirabilities.add(this.calculateEdgeDesirability(originCity, i));
+                cityIndexs.add(i);
             }
         }
 
-        // FIXME: This still gets thrown by application3. Probably when values get really small/big and "calculateEdgeDesirability" returns 0
-        throw new RuntimeException("Was not able to select a city! randomNum: "+randomNum+" accuProb: "+accumulatedProbability+" trailIndex: "+trailIndex+" originCity: "+this.trail[trailIndex-1]);
+        double totalDesirability = edgeDesirabilities.stream().reduce(0.0, Double::sum);
+        List<Double> probabilities = edgeDesirabilities.stream().map(desirability -> desirability/totalDesirability).toList();
+
+        double nextProbability = this.randomGenerator.nextDouble();
+        double probabilitySum = 0.0;
+        int currentIndex = 0;
+        while (currentIndex < cityIndexs.size() && probabilitySum + probabilities.get(currentIndex) < nextProbability) {
+            probabilitySum += probabilities.get(currentIndex);
+            currentIndex++;
+        }
+
+        return cityIndexs.get(currentIndex);
     }
 
-    private double[] calculateProbabilities(int originCity) {
-        double[] ret = new double[this.trail.length];
-        double totalDesirability = 0.0;
-
-        for (int i = 0; i < this.trail.length; i++) {
-            if (!this.visited[i]) {
-                totalDesirability += this.calculateEdgeDesirability(originCity, i);
-            }
-        }
-
-        for (int i = 0; i < this.trail.length; i++) {
-            if (this.visited[i]) {
-                ret[i] = 0.0;
-            } else {
-                double numerator = this.calculateEdgeDesirability(originCity, i);
-                ret[i] = numerator / totalDesirability;
-            }
-        }
-
-        return ret;
-    }
-
-    // FIXME: If pheromone or distance is 0, it breaks. If alpha/beta are too big, small values degenerate to 0 quickly, which breaks it.
     private double calculateEdgeDesirability(int fromIndex, int toIndex) {
         double[][] distanceMatrix = this.antColony.getDistanceMatrix();
         double[][] pheromoneMatrix = this.antColony.getPheromoneTrails();
         return Math.pow(pheromoneMatrix[fromIndex][toIndex], this.parameters.alpha())
-                * Math.pow(distanceMatrix[fromIndex][toIndex], this.parameters.beta());
+                * Math.pow(1/distanceMatrix[fromIndex][toIndex], this.parameters.beta());
     }
 
     private double calculateLength() {

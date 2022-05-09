@@ -1,7 +1,6 @@
 package app;
 
 import aco.AntColonyParameterOptimizer;
-import aco.AntColonyParameters;
 import aco.OptimisationResult;
 import data.DataInstance;
 import data.DataReader;
@@ -16,15 +15,12 @@ public class Application03 {
 
         Configuration config = Configuration.INSTANCE;
         double[][] distanceMatrix = dataInstance.getDistanceMatrix();
-        int numValuationIterations = 100;
+        int numValuationIterations = 50;
         double[] alphas = new double[]{config.alpha};
         double[] betas = new double[]{config.beta};
-        // Random factor pretty much changes nothing. All random generates better results...
         double[] randomFactors = new double[]{config.randomFactor};
         double[] initialPheromoneValues = new double[]{config.initialPheromoneValue};
-        // The best one of this is sometimes higher, sometimes lower.
         double[] pheromoneEvaporations = new double[]{config.pheromoneEvaporation};
-        // Best of this is sometimes higher, sometimes lower.
         double[] qs = new double[]{config.q};
         double[] antFactors = new double[]{config.antFactor};
 
