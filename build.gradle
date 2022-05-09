@@ -13,13 +13,14 @@ repositories {
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.2.2'
 }
 
 test {
     useJUnitPlatform()
 }
 
-mainClassName = "app.Application03"
+mainClassName = "app.Application02"
 
 java {
     toolchain {

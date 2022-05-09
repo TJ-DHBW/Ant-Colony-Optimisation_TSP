@@ -2,15 +2,18 @@ package app;
 
 import aco.AntColonyParameterOptimizer;
 import aco.OptimisationResult;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import data.DataInstance;
 import data.DataReader;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 public class Application03 {
     public static void main(String[] args) {
-        // TODO: Application03
+        // TODO: Application03 - maybe put some basic values in the arrays?
         DataInstance dataInstance = DataReader.readData(Configuration.INSTANCE.dataName);
 
         Configuration config = Configuration.INSTANCE;
@@ -39,9 +42,18 @@ public class Application03 {
             ArrayList<OptimisationResult> optimisationResults = parameterOptimizer.optimize();
             System.out.println();
             optimisationResults.forEach(res -> System.out.printf("%6g | "+res.parameters()+"\n", res.distance()));
+
+            if (config.writeParametersToFile) {
+                ObjectMapper mapper = new ObjectMapper();
+                // TODO: This puts the iterations as defined for the optimisation. Which might be unexpected?
+                mapper.writeValue(new File(config.parameterFilePath), optimisationResults.get(0).parameters());
+            }
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
             System.out.println("Execution of parameter optimisation was not successful.");
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Was not able to write the parameters to a json file.");
         }
     }
 

@@ -65,8 +65,7 @@ public class AntColony {
 
         ExecutorService executorService = Executors.newCachedThreadPool();
         for (int i = 0; i < this.parameters.maxIterations(); i++) {
-            // TODO: Remove logging
-            System.out.print(".");
+            if (Configuration.INSTANCE.writeToStdOut) System.out.print(".");
             // let the ants generate a path.
             if(Configuration.INSTANCE.useThreads) {
                 this.moveAnts(executorService);
@@ -132,8 +131,7 @@ public class AntColony {
             if (ant.getTrailDistance() < this.bestTourLength) {
                 this.bestTourOrder = ant.getTrail().clone();
                 this.bestTourLength = ant.getTrailDistance();
-                // TODO: Remove logging
-                System.out.println("New Best: "+this.bestTourLength);
+                if (Configuration.INSTANCE.writeToStdOut) System.out.println("New Best: "+this.bestTourLength);
             }
         }
     }

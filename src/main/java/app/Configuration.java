@@ -9,7 +9,11 @@ public enum Configuration {
     INSTANCE;
 
     public final String dataName = "a280.txt";
+    public final String parameterFilePath = "parameters.json";
+    public final String logFilePath = "log.txt";
     public final boolean useThreads = true;
+    public final boolean writeParametersToFile = true;
+    public final boolean writeToStdOut = false;
 
     public final Random randomGenerator = new Random();
 
