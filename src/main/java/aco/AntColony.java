@@ -78,6 +78,8 @@ public class AntColony {
             this.updateBest();
         }
         executorService.shutdown();
+
+        Configuration.INSTANCE.logger.info(this+" best route with length "+this.bestTourLength+" is: "+ Arrays.toString(this.bestTourOrder));
     }
 
     private void moveAnts(ExecutorService executorService) {
@@ -108,7 +110,6 @@ public class AntColony {
             }
         }
 
-        // TODO: This could be parallelized
         for (Ant ant : this.ants) {
             double contribution = this.parameters.q() / ant.getTrailDistance();
             int[] trail = ant.getTrail();
@@ -131,6 +132,7 @@ public class AntColony {
             if (ant.getTrailDistance() < this.bestTourLength) {
                 this.bestTourOrder = ant.getTrail().clone();
                 this.bestTourLength = ant.getTrailDistance();
+                Configuration.INSTANCE.logger.info(this+" has a new best, with "+this.bestTourLength);
                 if (Configuration.INSTANCE.writeToStdOut) System.out.println("New Best: "+this.bestTourLength);
             }
         }

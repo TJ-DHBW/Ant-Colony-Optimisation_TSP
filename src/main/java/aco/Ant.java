@@ -1,5 +1,7 @@
 package aco;
 
+import app.Configuration;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,6 +44,8 @@ public class Ant {
         }
 
         this.trailDistance = this.calculateLength();
+
+        Configuration.INSTANCE.logger.info(this+" found new trail("+this.trailDistance+"): "+ Arrays.toString(this.trail));
     }
 
     private int selectNextCityIndex(int trailIndex) {

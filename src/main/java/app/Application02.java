@@ -33,7 +33,6 @@ public class Application02 {
         AntColony antColony = new AntColony(antColonyParameters, dataInstance.getDistanceMatrix(), Configuration.INSTANCE.randomGenerator);
 
         antColony.run();
-        // TODO: Logging to a file
 
         System.out.println("Best tour is: " + Arrays.toString(antColony.getBestTourOrder()));
         System.out.println("With length: " + antColony.getBestTourLength());

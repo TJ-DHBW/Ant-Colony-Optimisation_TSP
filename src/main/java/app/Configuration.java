@@ -1,9 +1,11 @@
 package app;
 
+import utility.ACOLogger;
 import utility.Distance;
 import utility.DistanceFunction;
 
 import java.util.Random;
+import java.util.logging.Logger;
 
 public enum Configuration {
     INSTANCE;
@@ -15,6 +17,7 @@ public enum Configuration {
     public final boolean writeParametersToFile = true;
     public final boolean writeToStdOut = false;
 
+    public final Logger logger = ACOLogger.createLogger("ACOLogger", this.logFilePath);
     public final Random randomGenerator = new Random();
 
     public final int maxIterations = 1000;
