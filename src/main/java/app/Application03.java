@@ -1,6 +1,7 @@
 package app;
 
 import aco.AntColonyParameterOptimizer;
+import aco.AntColonyParameters;
 import aco.OptimisationResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import data.DataInstance;
@@ -13,14 +14,17 @@ import java.util.concurrent.ExecutionException;
 
 public class Application03 {
     public static void main(String[] args) {
-        // TODO: Application03 - maybe put some basic values in the arrays?
         DataInstance dataInstance = DataReader.readData(Configuration.INSTANCE.dataName);
 
+        // These values can be changed to find optimal parameters.
+        // Optimizing many parameters at once should be avoided, because of runtime.
+        // That is also the reason why the user has to make educated guesses, instead of the application trying random numbers.
         Configuration config = Configuration.INSTANCE;
         double[][] distanceMatrix = dataInstance.getDistanceMatrix();
         int numValuationIterations = 50;
         double[] alphas = new double[]{config.alpha};
-        double[] betas = new double[]{config.beta};
+        //double[] betas = new double[]{config.beta};
+        double[] betas = produceVariations(config.beta);
         double[] randomFactors = new double[]{config.randomFactor};
         double[] initialPheromoneValues = new double[]{config.initialPheromoneValue};
         double[] pheromoneEvaporations = new double[]{config.pheromoneEvaporation};
@@ -45,8 +49,14 @@ public class Application03 {
 
             if (config.writeParametersToFile) {
                 ObjectMapper mapper = new ObjectMapper();
-                // TODO: This puts the iterations as defined for the optimisation. Which might be unexpected?
-                mapper.writeValue(new File(config.parameterFilePath), optimisationResults.get(0).parameters());
+                AntColonyParameters bestParams = optimisationResults.get(0).parameters();
+                AntColonyParameters bestParamsFixedIterations = new AntColonyParameters(bestParams.antParameters(),
+                        config.maxIterations,
+                        bestParams.initialPheromoneValue(),
+                        bestParams.pheromoneEvaporation(),
+                        bestParams.q(),
+                        bestParams.antFactor());
+                mapper.writeValue(new File(config.parameterFilePath), bestParamsFixedIterations);
             }
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
