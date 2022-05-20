@@ -40,7 +40,8 @@ public class AntColony {
     private void validateDistanceMatrix() {
         int numCities = this.getNumCities();
         for (double[] arr : this.distanceMatrix) {
-            if (arr.length != numCities) throw new IllegalStateException("The distance matrix has to be square. At least one array was length %d, where it should have been %d.".formatted(arr.length, numCities));
+            if (arr.length != numCities)
+                throw new IllegalStateException("The distance matrix has to be square. At least one array was length %d, where it should have been %d.".formatted(arr.length, numCities));
         }
     }
 
@@ -67,9 +68,9 @@ public class AntColony {
         for (int i = 0; i < this.parameters.maxIterations(); i++) {
             if (Configuration.INSTANCE.writeToStdOut) System.out.print(".");
             // let the ants generate a path.
-            if(Configuration.INSTANCE.useThreads) {
+            if (Configuration.INSTANCE.useThreads) {
                 this.moveAnts(executorService);
-            }else {
+            } else {
                 this.moveAnts();
             }
             // evaporate pheromones and distribute pheromones from ants.
@@ -79,7 +80,7 @@ public class AntColony {
         }
         executorService.shutdown();
 
-        Configuration.INSTANCE.logger.info(this+" best route with length "+this.bestTourLength+" is: "+ Arrays.toString(this.bestTourOrder));
+        Configuration.INSTANCE.logger.info(this + " best route with length " + this.bestTourLength + " is: " + Arrays.toString(this.bestTourOrder));
     }
 
     private void moveAnts(ExecutorService executorService) {
@@ -106,7 +107,7 @@ public class AntColony {
     private void updateTrails() {
         for (int i = 0; i < this.pheromoneTrails.length; i++) {
             for (int j = 0; j < this.pheromoneTrails[i].length; j++) {
-                this.pheromoneTrails[i][j] = (1-this.parameters.pheromoneEvaporation()) * this.pheromoneTrails[i][j];
+                this.pheromoneTrails[i][j] = (1 - this.parameters.pheromoneEvaporation()) * this.pheromoneTrails[i][j];
             }
         }
 
@@ -115,10 +116,10 @@ public class AntColony {
             int[] trail = ant.getTrail();
             for (int i = 0; i < trail.length - 1; i++) {
                 int from = trail[i];
-                int to = trail[i+1];
+                int to = trail[i + 1];
                 this.pheromoneTrails[from][to] += contribution;
             }
-            this.pheromoneTrails[trail[trail.length-1]][trail[0]] += contribution;
+            this.pheromoneTrails[trail[trail.length - 1]][trail[0]] += contribution;
         }
     }
 
@@ -132,8 +133,8 @@ public class AntColony {
             if (ant.getTrailDistance() < this.bestTourLength) {
                 this.bestTourOrder = ant.getTrail().clone();
                 this.bestTourLength = ant.getTrailDistance();
-                Configuration.INSTANCE.logger.info(this+" has a new best, with "+this.bestTourLength);
-                if (Configuration.INSTANCE.writeToStdOut) System.out.println("New Best: "+this.bestTourLength);
+                Configuration.INSTANCE.logger.info(this + " has a new best, with " + this.bestTourLength);
+                if (Configuration.INSTANCE.writeToStdOut) System.out.println("New Best: " + this.bestTourLength);
             }
         }
     }

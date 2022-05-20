@@ -45,7 +45,7 @@ public class Application03 {
         try {
             ArrayList<OptimisationResult> optimisationResults = parameterOptimizer.optimize();
             System.out.println();
-            optimisationResults.forEach(res -> System.out.printf("%6g | "+res.parameters()+"\n", res.distance()));
+            optimisationResults.forEach(res -> System.out.printf("%6g | " + res.parameters() + "\n", res.distance()));
 
             if (config.writeParametersToFile) {
                 ObjectMapper mapper = new ObjectMapper();
@@ -68,6 +68,6 @@ public class Application03 {
     }
 
     private static double[] produceVariations(double originalValue) {
-        return new double[]{originalValue, originalValue/2, originalValue/5, originalValue/10, originalValue*2, originalValue*5, originalValue*10};
+        return new double[]{originalValue, originalValue / 2, originalValue / 5, originalValue / 10, originalValue * 2, originalValue * 5, originalValue * 10};
     }
 }

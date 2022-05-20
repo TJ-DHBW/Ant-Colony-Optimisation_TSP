@@ -30,6 +30,6 @@ public class Application01 {
         }
 
         System.out.printf("Best distance: %.2f%n", bestDistance);
-        System.out.println("With route: "+bestRoute);
+        System.out.println("With route: " + bestRoute);
     }
 }

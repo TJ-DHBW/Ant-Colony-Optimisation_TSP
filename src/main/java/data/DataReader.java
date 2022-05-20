@@ -8,17 +8,18 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class DataReader {
-    private DataReader() {}
+    private DataReader() {
+    }
 
     public static DataInstance readData(String dataName) {
         URL dataURL = Thread.currentThread().getContextClassLoader().getResource(dataName);
         if (dataURL == null) throw new RuntimeException("No data file found.");
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(dataURL.getPath(), StandardCharsets.UTF_8))){
+        try (BufferedReader reader = new BufferedReader(new FileReader(dataURL.getPath(), StandardCharsets.UTF_8))) {
             return DataReader.parseData(reader);
         } catch (IOException e) {
             e.printStackTrace();
-            throw new RuntimeException("Error while reading file: "+dataURL.getPath());
+            throw new RuntimeException("Error while reading file: " + dataURL.getPath());
         }
     }
 
@@ -28,7 +29,8 @@ public class DataReader {
         String line;
         while ((line = reader.readLine()) != null) {
             String[] data = line.trim().split(" +");
-            if (data.length != 3) throw new RuntimeException("Each line in the parsed data should consist of 3 ints, separated by spaces.");
+            if (data.length != 3)
+                throw new RuntimeException("Each line in the parsed data should consist of 3 ints, separated by spaces.");
 
             // int id = Integer.parseInt(data[0]);
             int x = Integer.parseInt(data[1]);

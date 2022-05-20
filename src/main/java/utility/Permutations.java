@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Permutations implements Iterable<ArrayList<Integer>>{
+public class Permutations implements Iterable<ArrayList<Integer>> {
     private final ArrayList<Integer> list;
 
     public Permutations(List<Integer> list) {
@@ -20,12 +20,12 @@ public class Permutations implements Iterable<ArrayList<Integer>>{
             @Override
             public boolean hasNext() {
                 /*
-                * Has a next element, if:
-                * 1. There is a next element to choose.
-                * 2. There are more permutations that can be produced with the current element.
-                * 3. There is only one element which has not yet been chosen.
-                * */
-                return currentIndex+1 < list.size() || (iterator != null && iterator.hasNext()) || currentIndex == 0;
+                 * Has a next element, if:
+                 * 1. There is a next element to choose.
+                 * 2. There are more permutations that can be produced with the current element.
+                 * 3. There is only one element which has not yet been chosen.
+                 * */
+                return currentIndex + 1 < list.size() || (iterator != null && iterator.hasNext()) || currentIndex == 0;
             }
 
             @Override

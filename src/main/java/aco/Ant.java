@@ -45,7 +45,7 @@ public class Ant {
 
         this.trailDistance = this.calculateLength();
 
-        Configuration.INSTANCE.logger.info(this+" found new trail("+this.trailDistance+"): "+ Arrays.toString(this.trail));
+        Configuration.INSTANCE.logger.info(this + " found new trail(" + this.trailDistance + "): " + Arrays.toString(this.trail));
     }
 
     private int selectNextCityIndex(int trailIndex) {
@@ -57,7 +57,7 @@ public class Ant {
             }
         }
 
-        int originCity = this.trail[trailIndex-1];
+        int originCity = this.trail[trailIndex - 1];
         ArrayList<Double> edgeDesirabilities = new ArrayList<>();
         ArrayList<Integer> cityIndexs = new ArrayList<>();
         for (int i = 0; i < this.trail.length; i++) {
@@ -68,7 +68,7 @@ public class Ant {
         }
 
         double totalDesirability = edgeDesirabilities.stream().reduce(0.0, Double::sum);
-        List<Double> probabilities = edgeDesirabilities.stream().map(desirability -> desirability/totalDesirability).toList();
+        List<Double> probabilities = edgeDesirabilities.stream().map(desirability -> desirability / totalDesirability).toList();
 
         double nextProbability = this.randomGenerator.nextDouble();
         double probabilitySum = 0.0;
@@ -85,13 +85,13 @@ public class Ant {
         double[][] distanceMatrix = this.antColony.getDistanceMatrix();
         double[][] pheromoneMatrix = this.antColony.getPheromoneTrails();
         return Math.pow(pheromoneMatrix[fromIndex][toIndex], this.parameters.alpha())
-                * Math.pow(1/distanceMatrix[fromIndex][toIndex], this.parameters.beta());
+                * Math.pow(1 / distanceMatrix[fromIndex][toIndex], this.parameters.beta());
     }
 
     private double calculateLength() {
         double lengthAccumulator = 0.0;
 
-        int toIndex = this.trail[this.trail.length -1];
+        int toIndex = this.trail[this.trail.length - 1];
         for (int nextValue : this.trail) {
             int fromIndex = toIndex;
             toIndex = nextValue;

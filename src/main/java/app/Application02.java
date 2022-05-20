@@ -16,7 +16,7 @@ public class Application02 {
         AntColonyParameters antColonyParameters;
         if (args.length == 0) {
             antColonyParameters = Application02.createAntColonyParametersFromDefaults();
-        }else if (args.length == 2 && args[0].equals("-best")) {
+        } else if (args.length == 2 && args[0].equals("-best")) {
             try {
                 antColonyParameters = Application02.createAntColonyParametersFromPath(args[1]);
             } catch (IOException e) {
@@ -24,7 +24,7 @@ public class Application02 {
                 System.out.println("Error while reading the parameters json.");
                 return;
             }
-        }else {
+        } else {
             System.out.println("The only option is \"-best <parameterJsonPath>\".");
             return;
         }

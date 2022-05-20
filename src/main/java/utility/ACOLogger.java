@@ -15,7 +15,7 @@ public class ACOLogger {
         try {
             fh = new FileHandler(logFileName);
         } catch (IOException e) {
-            throw new RuntimeException("Was not able to access the logging file: "+logFileName);
+            throw new RuntimeException("Was not able to access the logging file: " + logFileName);
         }
         fh.setFormatter(new SimpleFormatter() {
             @Override

@@ -16,7 +16,7 @@ public class DataInstance {
     private final DistanceFunction distanceFunction = Configuration.INSTANCE.distanceFunction;
 
     public DataInstance(List<int[]> positions) {
-        this.coordinates = new int[positions.size()*2];
+        this.coordinates = new int[positions.size() * 2];
         this.numPositions = positions.size();
         this.distanceMatrix = null;
 
@@ -24,8 +24,8 @@ public class DataInstance {
             int[] position = positions.get(i);
             if (position.length < 2) throw new RuntimeException("Every position has to consist of two integers.");
 
-            this.coordinates[i*2] = position[0];
-            this.coordinates[i*2+1] = position[1];
+            this.coordinates[i * 2] = position[0];
+            this.coordinates[i * 2 + 1] = position[1];
         }
     }
 
@@ -55,29 +55,32 @@ public class DataInstance {
 
     public int[] getPosition(int index) {
         if (index < 0) throw new IllegalArgumentException("Index can not be negative. Received: %d.".formatted(index));
-        if (index >= numPositions) throw new IndexOutOfBoundsException("Index (%d) out of bounds for %d positions.".formatted(index, numPositions));
+        if (index >= numPositions)
+            throw new IndexOutOfBoundsException("Index (%d) out of bounds for %d positions.".formatted(index, numPositions));
 
-        int scaledIndex = index*2;
+        int scaledIndex = index * 2;
         return new int[]{
                 this.coordinates[scaledIndex],
-                this.coordinates[scaledIndex+1]
+                this.coordinates[scaledIndex + 1]
         };
     }
 
     public int getX(int index) {
         if (index < 0) throw new IllegalArgumentException("Index can not be negative. Received: %d.".formatted(index));
-        if (index >= numPositions) throw new IndexOutOfBoundsException("Index (%d) out of bounds for %d positions.".formatted(index, numPositions));
+        if (index >= numPositions)
+            throw new IndexOutOfBoundsException("Index (%d) out of bounds for %d positions.".formatted(index, numPositions));
 
-        int scaledIndex = index*2;
+        int scaledIndex = index * 2;
         return this.coordinates[scaledIndex];
     }
 
     public int getY(int index) {
         if (index < 0) throw new IllegalArgumentException("Index can not be negative. Received: %d.".formatted(index));
-        if (index >= numPositions) throw new IndexOutOfBoundsException("Index (%d) out of bounds for %d positions.".formatted(index, numPositions));
+        if (index >= numPositions)
+            throw new IndexOutOfBoundsException("Index (%d) out of bounds for %d positions.".formatted(index, numPositions));
 
-        int scaledIndex = index*2;
-        return this.coordinates[scaledIndex+1];
+        int scaledIndex = index * 2;
+        return this.coordinates[scaledIndex + 1];
     }
 
     public int getNumPositions() {
@@ -88,10 +91,10 @@ public class DataInstance {
         if (indexes.size() < 2) throw new IllegalArgumentException("A route has to consist of at least 2 indexes.");
         double totalDistance = 0.0;
 
-        for (int i = 0; i < indexes.size()-1; i++) {
-            totalDistance += this.getDistanceMatrix()[indexes.get(i)][indexes.get(i+1)];
+        for (int i = 0; i < indexes.size() - 1; i++) {
+            totalDistance += this.getDistanceMatrix()[indexes.get(i)][indexes.get(i + 1)];
         }
-        totalDistance += this.getDistanceMatrix()[indexes.get(indexes.size()-1)][indexes.get(0)];
+        totalDistance += this.getDistanceMatrix()[indexes.get(indexes.size() - 1)][indexes.get(0)];
 
         return totalDistance;
     }
